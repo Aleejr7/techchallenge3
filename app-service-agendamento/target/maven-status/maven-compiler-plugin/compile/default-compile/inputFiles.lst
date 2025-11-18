@@ -1,0 +1,15 @@
+D:\FIAP\Fase3\app-service-agendamento\MicroServico-Agendamento\app-service-agendamento\src\main\java\com\appserviceagendamento\AppServiceAgendamentoApplication.java
+D:\FIAP\Fase3\app-service-agendamento\MicroServico-Agendamento\app-service-agendamento\src\main\java\com\appserviceagendamento\controller\ConsultaController.java
+D:\FIAP\Fase3\app-service-agendamento\MicroServico-Agendamento\app-service-agendamento\src\main\java\com\appserviceagendamento\controller\Handlers\ExceptionController.java
+D:\FIAP\Fase3\app-service-agendamento\MicroServico-Agendamento\app-service-agendamento\src\main\java\com\appserviceagendamento\domain\dto\ConsultaDTO.java
+D:\FIAP\Fase3\app-service-agendamento\MicroServico-Agendamento\app-service-agendamento\src\main\java\com\appserviceagendamento\domain\dto\ConsultaResponse.java
+D:\FIAP\Fase3\app-service-agendamento\MicroServico-Agendamento\app-service-agendamento\src\main\java\com\appserviceagendamento\domain\dto\ConsultaUpdateDTO.java
+D:\FIAP\Fase3\app-service-agendamento\MicroServico-Agendamento\app-service-agendamento\src\main\java\com\appserviceagendamento\domain\dto\ExceptionDTO.java
+D:\FIAP\Fase3\app-service-agendamento\MicroServico-Agendamento\app-service-agendamento\src\main\java\com\appserviceagendamento\domain\dto\ListExceptionsDTO.java
+D:\FIAP\Fase3\app-service-agendamento\MicroServico-Agendamento\app-service-agendamento\src\main\java\com\appserviceagendamento\domain\entity\ConsultaModel.java
+D:\FIAP\Fase3\app-service-agendamento\MicroServico-Agendamento\app-service-agendamento\src\main\java\com\appserviceagendamento\domain\entity\StatusConsulta.java
+D:\FIAP\Fase3\app-service-agendamento\MicroServico-Agendamento\app-service-agendamento\src\main\java\com\appserviceagendamento\domain\repository\ConsultaRepository.java
+D:\FIAP\Fase3\app-service-agendamento\MicroServico-Agendamento\app-service-agendamento\src\main\java\com\appserviceagendamento\service\ConsultaService.java
+D:\FIAP\Fase3\app-service-agendamento\MicroServico-Agendamento\app-service-agendamento\src\main\java\com\appserviceagendamento\service\Exceptions\BadRequest.java
+D:\FIAP\Fase3\app-service-agendamento\MicroServico-Agendamento\app-service-agendamento\src\main\java\com\appserviceagendamento\service\Exceptions\Conflict.java
+D:\FIAP\Fase3\app-service-agendamento\MicroServico-Agendamento\app-service-agendamento\src\main\java\com\appserviceagendamento\service\Exceptions\NotFound.java

@@ -1,0 +1,15 @@
+com\appserviceagendamento\service\Exceptions\Conflict.class
+com\appserviceagendamento\domain\dto\ConsultaUpdateDTO.class
+com\appserviceagendamento\controller\Handlers\ExceptionController.class
+com\appserviceagendamento\domain\entity\ConsultaModel.class
+com\appserviceagendamento\domain\dto\ListExceptionsDTO.class
+com\appserviceagendamento\domain\dto\ConsultaDTO.class
+com\appserviceagendamento\domain\entity\StatusConsulta.class
+com\appserviceagendamento\domain\dto\ExceptionDTO.class
+com\appserviceagendamento\AppServiceAgendamentoApplication.class
+com\appserviceagendamento\controller\ConsultaController.class
+com\appserviceagendamento\domain\repository\ConsultaRepository.class
+com\appserviceagendamento\service\Exceptions\BadRequest.class
+com\appserviceagendamento\domain\dto\ConsultaResponse.class
+com\appserviceagendamento\service\ConsultaService.class
+com\appserviceagendamento\service\Exceptions\NotFound.class
