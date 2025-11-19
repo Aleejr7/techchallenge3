@@ -12,12 +12,23 @@ public class ConsultaModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "id_medico")
     private Long idMedico;
+
+    @Column(name = "id_paciente")
     private Long idPaciente;
+
+    @Column(name = "descricao")
     private String descricao;
+
+    @Column(name = "dia_hora_consulta")
     private LocalDateTime diaHoraConsulta;
-    @Enumerated(EnumType.STRING)
+
+    @Column(name = "status")
     private StatusConsulta status;
+
+    @Column(name = "motivo_consulta")
     private String motivoConsulta;
 
     public ConsultaModel() {
@@ -28,7 +39,6 @@ public class ConsultaModel {
         this.idPaciente = consultaDTO.idPaciente();
         this.descricao = consultaDTO.descricao();
         this.diaHoraConsulta = consultaDTO.diaHoraConsulta();
-        this.status = StatusConsulta.ABERTO;
         this.motivoConsulta = consultaDTO.motivoConsulta();
     }
 

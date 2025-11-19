@@ -36,52 +36,6 @@ services:
           key_claim_name: iss
           secret_is_base64: false
           run_on_preflight: true
-      - name: pre-function
-        config:
-          access:
-            - |
-              -- Após validação do JWT pelo plugin, extrair claims do contexto
-              local jwt_obj = kong.ctx.shared.jwt_keyset_key
-              local credential = kong.client.get_credential()
-              
-              -- Pegar o token do header
-              local auth_header = kong.request.get_header("Authorization")
-              if auth_header then
-                local token_str = auth_header:match("Bearer%s+(.+)")
-                if token_str then
-                  -- Decodificar o JWT manualmente para extrair os claims
-                  local cjson = require "cjson"
-                  local function base64_url_decode(str)
-                    local base64 = require "ngx.base64"
-                    str = str:gsub('-', '+'):gsub('_', '/')
-                    local padding = #str % 4
-                    if padding > 0 then
-                      str = str .. string.rep('=', 4 - padding)
-                    end
-                    return base64.decode_base64url(str)
-                  end
-                  
-                  local parts = {}
-                  for part in token_str:gmatch("[^%.]+") do
-                    table.insert(parts, part)
-                  end
-                  
-                  if #parts == 3 then
-                    local payload = base64_url_decode(parts[2])
-                    local claims = cjson.decode(payload)
-                    
-                    if claims.role then
-                      kong.service.request.set_header("X-User-Role", claims.role)
-                    end
-                    if claims.userId then
-                      kong.service.request.set_header("X-User-Id", tostring(claims.userId))
-                    end
-                  end
-                end
-              end
-              
-              -- Remove o header Authorization antes de enviar para o serviço
-              kong.service.request.clear_header("Authorization")
 
 consumers:
   - username: jwt-consumer

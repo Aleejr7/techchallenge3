@@ -37,16 +37,12 @@ public class ConsultaService {
     }
 
     public ConsultaModel criarAgendamento(ConsultaDTO request, String userRole, Long userId){
-        // MEDICO e ENFERMEIRO podem criar consultas
         if (!"MEDICO".equals(userRole) && !"ENFERMEIRO".equals(userRole)) {
             throw new BadRequest("Apenas médicos e enfermeiros podem criar consultas");
         }
 
         if (!request.diaHoraConsulta().isAfter(LocalDateTime.now())){
             throw new BadRequest("A data da consulta deve ser no futuro.");
-        }
-        if (request.idMedico().equals(request.idPaciente())){
-            throw new Conflict("O paciente não pode se atender");
         }
 
         ConsultaModel consultaModel = new ConsultaModel(request);
@@ -62,9 +58,6 @@ public class ConsultaService {
 
         if (!request.diaHoraConsulta().isAfter(LocalDateTime.now())){
             throw new BadRequest("A data da consulta deve ser no futuro.");
-        }
-        if (request.idMedico().equals(request.idPaciente())){
-            throw new Conflict("O paciente não pode se atender");
         }
 
         consultaModel.setIdMedico(request.idMedico());
@@ -90,8 +83,6 @@ public class ConsultaService {
         if ("MEDICO".equals(userRole) && !consulta.getIdMedico().equals(userId)) {
             throw new BadRequest("Médico só pode visualizar suas próprias consultas");
         }
-
-        // ENFERMEIRO pode ver todas as consultas
     }
 
     private void validarPermissaoEdicao(ConsultaModel consulta, String userRole, Long userId) {
@@ -108,7 +99,5 @@ public class ConsultaService {
         if ("MEDICO".equals(userRole) && !consulta.getIdMedico().equals(userId)) {
             throw new BadRequest("Médico só pode editar suas próprias consultas");
         }
-
-        // ENFERMEIRO pode editar todas as consultas
     }
 }

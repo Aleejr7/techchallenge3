@@ -1,0 +1,197 @@
+{
+	"info": {
+		"_postman_id": "1117c86c-afcb-434f-8ebb-774bde1b36e7",
+		"name": "Techchallenge - Fase 3",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26247817"
+	},
+	"item": [
+		{
+			"name": "app-service-auth",
+			"item": [
+				{
+					"name": "Logar",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Save token\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.collectionVariables.set(\"token\", jsonData.token);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"jose@gmail.com\",\r\n    \"senha\": \"usuario123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{gateway-techchallenge}}/auth/login",
+							"host": [
+								"{{gateway-techchallenge}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Registrar Usuario",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"Maria\",\r\n    \"documento\": \"128.888.123-22\",\r\n    \"email\": \"maria@gmail.com\",\r\n    \"senha\": \"usuario123\",\r\n    \"tipoUsuario\": \"ENFERMEIRO\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{gateway-techchallenge}}/auth/register",
+							"host": [
+								"{{gateway-techchallenge}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "app-service-historico",
+			"item": []
+		},
+		{
+			"name": "app-service-agendamento",
+			"item": [
+				{
+					"name": "Agendar Consulta",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"idMedico\": 403,\r\n    \"idPaciente\": 402,\r\n    \"descricao\": \"Consulta médica do paciente Alesandro, com o Dr. José\",\r\n    \"diaHoraConsulta\": \"12/12/2025 12:00\",\r\n    \"motivoConsulta\": \"Dor na perna\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{gateway-techchallenge}}/consulta",
+							"host": [
+								"{{gateway-techchallenge}}"
+							],
+							"path": [
+								"consulta"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Editar Consulta",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \r\n    \"idMedico\": 403,\r\n    \"idPaciente\": 402,\r\n    \"descricao\": \"Consulta médica do paciente Alesandro, com o Dr. José\",\r\n    \"diaHoraConsulta\": \"12/12/2025 12:00\",\r\n    \"motivoConsulta\": \"Dor na perna\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{gateway-techchallenge}}/consulta",
+							"host": [
+								"{{gateway-techchallenge}}"
+							],
+							"path": [
+								"consulta"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "gateway-techchallenge",
+			"value": ""
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "default"
+		}
+	]
+}

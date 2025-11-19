@@ -3,6 +3,7 @@ package com.appserviceagendamento.controller;
 import com.appserviceagendamento.domain.dto.ConsultaDTO;
 import com.appserviceagendamento.domain.dto.ConsultaUpdateDTO;
 import com.appserviceagendamento.service.ConsultaService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,26 +20,35 @@ public class ConsultaController {
     @GetMapping("consulta/{id}")
     public ResponseEntity getConsultaId(
             @PathVariable Long id,
-            @RequestHeader(value = "X-User-Role", required = false) String userRole,
-            @RequestHeader(value = "X-User-Id", required = false) Long userId){
+            HttpServletRequest request) {
+
+        String userRole = (String) request.getAttribute("userRole");
+        Long userId = (Long) request.getAttribute("userId");
+
         var consulta = service.buscarAgendamento(id, userRole, userId);
         return ResponseEntity.ok(consulta);
     }
 
     @PostMapping("consulta")
-    public ResponseEntity postConsulta(
+    public ResponseEntity agendarConsulta(
             @RequestBody @Valid ConsultaDTO consultaDTO,
-            @RequestHeader(value = "X-User-Role", required = false) String userRole,
-            @RequestHeader(value = "X-User-Id", required = false) Long userId){
+            HttpServletRequest request) {
+
+        String userRole = (String) request.getAttribute("userRole");
+        Long userId = (Long) request.getAttribute("userId");
+
         service.criarAgendamento(consultaDTO, userRole, userId);
         return ResponseEntity.ok("Criado com sucesso");
     }
 
     @PutMapping("consulta")
-    public ResponseEntity putConsulta(
+    public ResponseEntity atualizarConsulta(
             @RequestBody @Valid ConsultaUpdateDTO consultaUpdateDTO,
-            @RequestHeader(value = "X-User-Role", required = false) String userRole,
-            @RequestHeader(value = "X-User-Id", required = false) Long userId){
+            HttpServletRequest request) {
+
+        String userRole = (String) request.getAttribute("userRole");
+        Long userId = (Long) request.getAttribute("userId");
+
         service.editarAgendamento(consultaUpdateDTO, userRole, userId);
         return ResponseEntity.ok("Editado com sucesso");
     }
