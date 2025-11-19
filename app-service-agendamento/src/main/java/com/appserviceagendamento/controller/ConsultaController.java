@@ -15,21 +15,31 @@ public class ConsultaController {
     public ConsultaController(ConsultaService service) {
         this.service = service;
     }
-    // NÃO OBRIGATORIA
-    // VERIFICAR RETORNO HORÁRIO
+
     @GetMapping("consulta/{id}")
-    public ResponseEntity getConsultaId(@PathVariable Long id){
-        var consulta = service.buscarAgendamento(id);
+    public ResponseEntity getConsultaId(
+            @PathVariable Long id,
+            @RequestHeader(value = "X-User-Role", required = false) String userRole,
+            @RequestHeader(value = "X-User-Id", required = false) Long userId){
+        var consulta = service.buscarAgendamento(id, userRole, userId);
         return ResponseEntity.ok(consulta);
     }
+
     @PostMapping("consulta")
-    public ResponseEntity postConsulta(@RequestBody @Valid ConsultaDTO consultaDTO){
-        service.criarAgendamento(consultaDTO);
-        return ResponseEntity.ok("Criado com sucesso"); //Retornar RESPONSE
+    public ResponseEntity postConsulta(
+            @RequestBody @Valid ConsultaDTO consultaDTO,
+            @RequestHeader(value = "X-User-Role", required = false) String userRole,
+            @RequestHeader(value = "X-User-Id", required = false) Long userId){
+        service.criarAgendamento(consultaDTO, userRole, userId);
+        return ResponseEntity.ok("Criado com sucesso");
     }
+
     @PutMapping("consulta")
-    public ResponseEntity putConsulta( @RequestBody @Valid ConsultaUpdateDTO consultaUpdateDTO){
-        service.editarAgendamento(consultaUpdateDTO);
+    public ResponseEntity putConsulta(
+            @RequestBody @Valid ConsultaUpdateDTO consultaUpdateDTO,
+            @RequestHeader(value = "X-User-Role", required = false) String userRole,
+            @RequestHeader(value = "X-User-Id", required = false) Long userId){
+        service.editarAgendamento(consultaUpdateDTO, userRole, userId);
         return ResponseEntity.ok("Editado com sucesso");
     }
 }

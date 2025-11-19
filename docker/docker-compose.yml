@@ -29,6 +29,7 @@ services:
     build:
       context: ..
       dockerfile: docker/Dockerfile-service-auth
+    image: docker-app-auth
     container_name: app-service-auth
     restart: on-failure
     depends_on:
@@ -50,38 +51,26 @@ services:
     networks:
       - techchallenge-network
 
-  kong-database:
-    image: postgres:13
-    container_name: kong-database
-    restart: always
-    environment:
-      POSTGRES_USER: kong
-      POSTGRES_DB: kong
-      POSTGRES_PASSWORD: kong
-    ports:
-      - "5432:5432"
-    volumes:
-      - kong-db-data:/var/lib/postgresql/data
-    networks:
-      - techchallenge-network
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "kong"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  kong-migration:
-    image: kong:3.4
-    container_name: kong-migration
-    command: sh -c "kong migrations bootstrap && kong migrations up && kong migrations finish"
-    environment:
-      KONG_DATABASE: postgres
-      KONG_PG_HOST: kong-database
-      KONG_PG_USER: kong
-      KONG_PG_PASSWORD: kong
+  app-agendamento:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile-service-agendamento
+    container_name: app-service-agendamento
+    restart: on-failure
     depends_on:
-      kong-database:
+      db:
         condition: service_healthy
+    ports:
+      - "8082:8082"
+    environment:
+      # Database Configuration
+      SPRING_DATASOURCE_URL: jdbc:mariadb://db:3306/${MARIADB_DATABASE}?useSSL=false
+      SPRING_DATASOURCE_USERNAME: ${MARIADB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${MARIADB_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MariaDBDialect
+      # Server Configuration
+      SERVER_PORT: 8082
     networks:
       - techchallenge-network
 
@@ -90,10 +79,8 @@ services:
     container_name: kong
     restart: always
     environment:
-      KONG_DATABASE: postgres
-      KONG_PG_HOST: kong-database
-      KONG_PG_USER: kong
-      KONG_PG_PASSWORD: kong
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: /kong/declarative/kong.yml
       KONG_PROXY_ACCESS_LOG: /dev/stdout
       KONG_ADMIN_ACCESS_LOG: /dev/stdout
       KONG_PROXY_ERROR_LOG: /dev/stderr
@@ -102,12 +89,14 @@ services:
       KONG_PROXY_LISTEN: 0.0.0.0:8000
     ports:
       - "8080:8000"  # Proxy do Kong
-      - "8000:8001"  # Admin API do Kong
+      - "8001:8001"  # Admin API do Kong
+    volumes:
+      - ./kong-declarative-config.yml:/kong/declarative/kong.yml:ro
     depends_on:
-      kong-database:
-        condition: service_healthy
-      kong-migration:
-        condition: service_completed_successfully
+      app:
+        condition: service_started
+      app-agendamento:
+        condition: service_started
     networks:
       - techchallenge-network
     healthcheck:
@@ -116,42 +105,6 @@ services:
       timeout: 5s
       retries: 5
 
-  konga-prepare:
-    image: pantsel/konga:latest
-    container_name: konga-prepare
-    command: -c prepare -a mysql -u mysql://${MARIADB_USER}:${MARIADB_PASSWORD}@db:3306/konga
-    environment:
-      NODE_ENV: production
-    depends_on:
-      db:
-        condition: service_healthy
-    networks:
-      - techchallenge-network
-    restart: on-failure
-
-  konga:
-    image: pantsel/konga:latest
-    container_name: konga
-    restart: always
-    environment:
-      NODE_ENV: production
-      DB_ADAPTER: mysql
-      DB_HOST: db
-      DB_PORT: 3306
-      DB_USER: ${MARIADB_USER}
-      DB_PASSWORD: ${MARIADB_PASSWORD}
-      DB_DATABASE: konga
-    ports:
-      - "1337:1337"
-    depends_on:
-      db:
-        condition: service_healthy
-      kong:
-        condition: service_healthy
-      konga-prepare:
-        condition: service_completed_successfully
-    networks:
-      - techchallenge-network
 
 networks:
   techchallenge-network:
@@ -159,4 +112,3 @@ networks:
 
 volumes:
   mariadb_data:
-  kong-db-data:

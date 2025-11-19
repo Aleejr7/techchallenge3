@@ -19,9 +19,12 @@ public class ConsultaService {
     public ConsultaService(ConsultaRepository repository) {
         this.repository = repository;
     }
-    public ConsultaResponse buscarAgendamento(Long id){
-        //ADICIONAR EXCEPTION PERSONALIZADA
+    public ConsultaResponse buscarAgendamento(Long id, String userRole, Long userId){
         ConsultaModel agendamento = repository.findById(id).orElseThrow(() -> new NotFound("Consulta não encontrada"));
+
+        // Validar permissões baseado na role
+        validarPermissaoAcesso(agendamento, userRole, userId);
+
         ConsultaResponse consulta = new ConsultaResponse(
                 agendamento.getIdMedico(),
                 agendamento.getIdPaciente(),
@@ -33,35 +36,37 @@ public class ConsultaService {
         return consulta;
     }
 
-    public ConsultaModel criarAgendamento(ConsultaDTO request){
+    public ConsultaModel criarAgendamento(ConsultaDTO request, String userRole, Long userId){
+        // MEDICO e ENFERMEIRO podem criar consultas
+        if (!"MEDICO".equals(userRole) && !"ENFERMEIRO".equals(userRole)) {
+            throw new BadRequest("Apenas médicos e enfermeiros podem criar consultas");
+        }
 
-        //repository.findbyIdPaciente
-        //repository.findbyIdMedico
-
-        if (!request.diaHoraConsulta().isAfter(LocalDateTime.now())){ //ADICIONAR 1 DIA
+        if (!request.diaHoraConsulta().isAfter(LocalDateTime.now())){
             throw new BadRequest("A data da consulta deve ser no futuro.");
         }
         if (request.idMedico().equals(request.idPaciente())){
             throw new Conflict("O paciente não pode se atender");
         }
+
         ConsultaModel consultaModel = new ConsultaModel(request);
         return repository.save(consultaModel);
     }
-    public ConsultaModel editarAgendamento(ConsultaUpdateDTO request){
+
+    public ConsultaModel editarAgendamento(ConsultaUpdateDTO request, String userRole, Long userId){
         ConsultaModel consultaModel = repository.findById(request.id()).
                 orElseThrow(() -> new NotFound("Consulta não encontrada"));
 
-        //repository.findbyIdPaciente
-        //repository.findbyIdMedico
-        if (!request.diaHoraConsulta().isAfter(LocalDateTime.now())){ //ADICIONAR 1 DIA
+        // Validar permissões baseado na role
+        validarPermissaoEdicao(consultaModel, userRole, userId);
+
+        if (!request.diaHoraConsulta().isAfter(LocalDateTime.now())){
             throw new BadRequest("A data da consulta deve ser no futuro.");
         }
         if (request.idMedico().equals(request.idPaciente())){
             throw new Conflict("O paciente não pode se atender");
         }
-//        if (request.status().equals(StatusConsulta.values())){
-//            throw new RuntimeException("Selecione um status válido");
-//        }
+
         consultaModel.setIdMedico(request.idMedico());
         consultaModel.setIdPaciente(request.idPaciente());
         consultaModel.setDescricao(request.descricao());
@@ -69,5 +74,41 @@ public class ConsultaService {
         consultaModel.setStatus(request.status());
         consultaModel.setMotivoConsulta(request.motivoConsulta());
         return repository.save(consultaModel);
+    }
+
+    private void validarPermissaoAcesso(ConsultaModel consulta, String userRole, Long userId) {
+        if (userRole == null) {
+            throw new BadRequest("Role do usuário não identificada");
+        }
+
+        // PACIENTE só pode ver suas próprias consultas
+        if ("PACIENTE".equals(userRole) && !consulta.getIdPaciente().equals(userId)) {
+            throw new BadRequest("Paciente só pode visualizar suas próprias consultas");
+        }
+
+        // MEDICO só pode ver consultas onde é o médico responsável
+        if ("MEDICO".equals(userRole) && !consulta.getIdMedico().equals(userId)) {
+            throw new BadRequest("Médico só pode visualizar suas próprias consultas");
+        }
+
+        // ENFERMEIRO pode ver todas as consultas
+    }
+
+    private void validarPermissaoEdicao(ConsultaModel consulta, String userRole, Long userId) {
+        if (userRole == null) {
+            throw new BadRequest("Role do usuário não identificada");
+        }
+
+        // PACIENTE não pode editar consultas
+        if ("PACIENTE".equals(userRole)) {
+            throw new BadRequest("Paciente não pode editar consultas");
+        }
+
+        // MEDICO só pode editar suas próprias consultas
+        if ("MEDICO".equals(userRole) && !consulta.getIdMedico().equals(userId)) {
+            throw new BadRequest("Médico só pode editar suas próprias consultas");
+        }
+
+        // ENFERMEIRO pode editar todas as consultas
     }
 }

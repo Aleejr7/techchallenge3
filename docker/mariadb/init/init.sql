@@ -15,12 +15,20 @@ CREATE TABLE IF NOT EXISTS usuarios (
     INDEX idx_documento (documento)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS consulta (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    id_medico BIGINT NOT NULL,
+    id_paciente BIGINT NOT NULL,
+    descricao VARCHAR(500),
+    dia_hora_consulta DATETIME NOT NULL,
+    status VARCHAR(50) NOT NULL,
+    motivo_consulta VARCHAR(500),
+    PRIMARY KEY (id),
+    INDEX idx_medico (id_medico),
+    INDEX idx_paciente (id_paciente),
+    INDEX idx_data (dia_hora_consulta)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 SHOW TABLES;
 DESCRIBE usuarios;
-
--- Criar banco de dados para o Konga
-CREATE DATABASE IF NOT EXISTS konga CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- Conceder permissões ao usuário para acessar o banco konga
-GRANT ALL PRIVILEGES ON konga.* TO 'admin'@'%';
-FLUSH PRIVILEGES;
+DESCRIBE consulta;
