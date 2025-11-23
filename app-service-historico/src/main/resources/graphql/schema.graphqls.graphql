@@ -1,0 +1,18 @@
+# Se você não configurar o scalar de data, use String.
+# Mas o ideal é configurar 'scalar LocalDateTime' no projeto.
+scalar LocalDateTime
+
+type Consulta {
+    id: ID!
+    idMedico: Int!
+    idPaciente: Int!
+    descricao: String
+    diaHoraConsulta: String!
+    status: String!
+    motivoConsulta: String
+}
+
+type Query {
+    # Permite filtrar histórico do paciente, opcionalmente apenas futuras
+    historicoPaciente(idPaciente: Int!, apenasFuturas: Boolean): [Consulta]
+}
