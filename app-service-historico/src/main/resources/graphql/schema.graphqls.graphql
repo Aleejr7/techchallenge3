@@ -1,7 +1,3 @@
-# Se você não configurar o scalar de data, use String.
-# Mas o ideal é configurar 'scalar LocalDateTime' no projeto.
-scalar LocalDateTime
-
 type Consulta {
     id: ID!
     idMedico: Int!
