@@ -8,6 +8,7 @@ import com.appserviceagendamento.domain.repository.ConsultaRepository;
 import com.appserviceagendamento.service.Exceptions.BadRequest;
 import com.appserviceagendamento.service.Exceptions.Conflict;
 import com.appserviceagendamento.service.Exceptions.NotFound;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,9 +16,11 @@ import java.time.LocalDateTime;
 @Service
 public class ConsultaService {
     private final ConsultaRepository repository;
+    private final KafkaTemplate<String,ConsultaDTO> kafkaTemplate;
 
-    public ConsultaService(ConsultaRepository repository) {
+    public ConsultaService(ConsultaRepository repository, KafkaTemplate<String, ConsultaDTO> kafkaTemplate) {
         this.repository = repository;
+        this.kafkaTemplate = kafkaTemplate;
     }
     public ConsultaResponse buscarAgendamento(Long id, String userRole, Long userId){
         ConsultaModel agendamento = repository.findById(id).orElseThrow(() -> new NotFound("Consulta não encontrada"));
@@ -46,6 +49,7 @@ public class ConsultaService {
         }
 
         ConsultaModel consultaModel = new ConsultaModel(request);
+        kafkaTemplate.send("consulta-produzida",request);
         return repository.save(consultaModel);
     }
 
