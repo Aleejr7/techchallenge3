@@ -2,13 +2,16 @@ package com.appserviceagendamento.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 import java.time.LocalDateTime;
 
 public record ConsultaDTO(
+         @NotNull(message = "O ID do médico é obrigatório")
          @Positive(message = "Insira um valor válido")
          Long idMedico,
+         @NotNull(message = "O ID do paciente é obrigatório")
          @Positive(message = "Insira um valor válido")
          Long idPaciente,
          String descricao,

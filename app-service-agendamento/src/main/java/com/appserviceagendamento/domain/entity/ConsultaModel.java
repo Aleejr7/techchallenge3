@@ -40,6 +40,7 @@ public class ConsultaModel {
         this.descricao = consultaDTO.descricao();
         this.diaHoraConsulta = consultaDTO.diaHoraConsulta();
         this.motivoConsulta = consultaDTO.motivoConsulta();
+        this.status = StatusConsulta.ABERTO;
     }
 
     public Long getIdMedico() {
