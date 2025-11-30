@@ -3,6 +3,7 @@ package com.notificacao.kafka;
 
 import com.notificacao.DTO.ConsultaDTO;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,21 +26,25 @@ public class KafkaConsumerConfig {
     private String bootstrapAddress;
 
     @Bean
-    public ConsumerFactory<String, ConsultaDTO> notificacaoConsumerFactory(){
+    public ConsumerFactory<String, Object> notificacaoConsumerFactory(){
         Map<String,Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,bootstrapAddress);
         props.put(ConsumerConfig.GROUP_ID_CONFIG,"consulta-produzida");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
-        props.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, JsonDeserializer.class);
+        props.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, StringDeserializer.class);
         props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);
         props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
-        props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "com.notificacao.DTO.ConsultaDTO");
+        //props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "com.notificacao.DTO.ConsultaDTO");
+        props.put(JsonDeserializer.TYPE_MAPPINGS,
+                "com.appserviceagendamento.domain.dto.ConsultaDTO:com.notificacao.DTO.ConsultaDTO," +
+                "com.appserviceagendamento.domain.dto.ConsultaUpdateDTO:com.notificacao.DTO.ConsultaUpdateDTO"
+        );
         return new DefaultKafkaConsumerFactory<>(props);
     }
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String,ConsultaDTO> consultaDTOConcurrentKafkaListenerContainerFactory(){
-        ConcurrentKafkaListenerContainerFactory<String,ConsultaDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String,Object> consultaDTOConcurrentKafkaListenerContainerFactory(){
+        ConcurrentKafkaListenerContainerFactory<String,Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(notificacaoConsumerFactory());
         return factory;
     }

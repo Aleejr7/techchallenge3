@@ -23,6 +23,6 @@ public class KafkaTopicConfig {
         return new KafkaAdmin(configs);
     }
     public NewTopic topicOrderProcessed() {
-        return new NewTopic("consulta-produzida", 2, (short) 1);
+        return new NewTopic("consulta-eventos", 2, (short) 1);
     }
 }

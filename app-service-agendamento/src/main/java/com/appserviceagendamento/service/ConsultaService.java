@@ -6,7 +6,6 @@ import com.appserviceagendamento.domain.dto.ConsultaUpdateDTO;
 import com.appserviceagendamento.domain.entity.ConsultaModel;
 import com.appserviceagendamento.domain.repository.ConsultaRepository;
 import com.appserviceagendamento.service.Exceptions.BadRequest;
-import com.appserviceagendamento.service.Exceptions.Conflict;
 import com.appserviceagendamento.service.Exceptions.NotFound;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -16,9 +15,9 @@ import java.time.LocalDateTime;
 @Service
 public class ConsultaService {
     private final ConsultaRepository repository;
-    private final KafkaTemplate<String,ConsultaDTO> kafkaTemplate;
+    private final KafkaTemplate<String,Object> kafkaTemplate;
 
-    public ConsultaService(ConsultaRepository repository, KafkaTemplate<String, ConsultaDTO> kafkaTemplate) {
+    public ConsultaService(ConsultaRepository repository, KafkaTemplate<String, Object> kafkaTemplate) {
         this.repository = repository;
         this.kafkaTemplate = kafkaTemplate;
     }
@@ -49,7 +48,7 @@ public class ConsultaService {
         }
 
         ConsultaModel consultaModel = new ConsultaModel(request);
-        kafkaTemplate.send("consulta-produzida",request);
+        kafkaTemplate.send("consulta-eventos","Consulta criada em: "+ LocalDateTime.now(),request);
         return repository.save(consultaModel);
     }
 
@@ -70,6 +69,8 @@ public class ConsultaService {
         consultaModel.setDiaHoraConsulta(request.diaHoraConsulta());
         consultaModel.setStatus(request.status());
         consultaModel.setMotivoConsulta(request.motivoConsulta());
+
+        kafkaTemplate.send("consulta-eventos","Consulta alterada: " + request.id(),request);
         return repository.save(consultaModel);
     }
 
