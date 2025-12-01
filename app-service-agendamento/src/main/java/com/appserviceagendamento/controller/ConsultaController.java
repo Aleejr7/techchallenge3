@@ -37,8 +37,7 @@ public class ConsultaController {
         String userRole = (String) request.getAttribute("userRole");
         Long userId = (Long) request.getAttribute("userId");
 
-        service.criarAgendamento(consultaDTO, userRole, userId);
-        return ResponseEntity.ok("Criado com sucesso");
+        return ResponseEntity.ok(service.criarAgendamento(consultaDTO, userRole, userId));
     }
 
     @PutMapping("consulta")
@@ -49,7 +48,6 @@ public class ConsultaController {
         String userRole = (String) request.getAttribute("userRole");
         Long userId = (Long) request.getAttribute("userId");
 
-        service.editarAgendamento(consultaUpdateDTO, userRole, userId);
-        return ResponseEntity.ok("Editado com sucesso");
+        return ResponseEntity.ok(service.editarAgendamento(consultaUpdateDTO, userRole, userId));
     }
 }

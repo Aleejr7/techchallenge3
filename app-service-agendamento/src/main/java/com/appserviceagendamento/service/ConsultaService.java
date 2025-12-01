@@ -4,6 +4,7 @@ import com.appserviceagendamento.domain.dto.ConsultaDTO;
 import com.appserviceagendamento.domain.dto.ConsultaResponse;
 import com.appserviceagendamento.domain.dto.ConsultaUpdateDTO;
 import com.appserviceagendamento.domain.entity.ConsultaModel;
+import com.appserviceagendamento.domain.entity.StatusConsulta;
 import com.appserviceagendamento.domain.repository.ConsultaRepository;
 import com.appserviceagendamento.service.Exceptions.BadRequest;
 import com.appserviceagendamento.service.Exceptions.NotFound;
@@ -38,7 +39,7 @@ public class ConsultaService {
         return consulta;
     }
 
-    public ConsultaModel criarAgendamento(ConsultaDTO request, String userRole, Long userId){
+    public ConsultaResponse criarAgendamento(ConsultaDTO request, String userRole, Long userId){
         if (!"MEDICO".equals(userRole) && !"ENFERMEIRO".equals(userRole)) {
             throw new BadRequest("Apenas médicos e enfermeiros podem criar consultas");
         }
@@ -48,11 +49,20 @@ public class ConsultaService {
         }
 
         ConsultaModel consultaModel = new ConsultaModel(request);
+        ConsultaModel salvo = repository.save(consultaModel);
+        ConsultaResponse response = new ConsultaResponse(
+                salvo.getIdMedico(),
+                salvo.getIdPaciente(),
+                salvo.getDescricao(),
+                salvo.getDiaHoraConsulta(),
+                salvo.getStatus(),
+                salvo.getMotivoConsulta()
+        );
         kafkaTemplate.send("consulta-eventos","Consulta criada em: "+ LocalDateTime.now(),request);
-        return repository.save(consultaModel);
+        return response;
     }
 
-    public ConsultaModel editarAgendamento(ConsultaUpdateDTO request, String userRole, Long userId){
+    public ConsultaResponse editarAgendamento(ConsultaUpdateDTO request, String userRole, Long userId){
         ConsultaModel consultaModel = repository.findById(request.id()).
                 orElseThrow(() -> new NotFound("Consulta não encontrada"));
 
@@ -70,8 +80,19 @@ public class ConsultaService {
         consultaModel.setStatus(request.status());
         consultaModel.setMotivoConsulta(request.motivoConsulta());
 
+        ConsultaModel salvo = repository.save(consultaModel);
+
+        ConsultaResponse response = new ConsultaResponse(
+                consultaModel.getIdMedico(),
+                consultaModel.getIdPaciente(),
+                consultaModel.getDescricao(),
+                consultaModel.getDiaHoraConsulta(),
+                consultaModel.getStatus(),
+                consultaModel.getMotivoConsulta()
+        );
+
         kafkaTemplate.send("consulta-eventos","Consulta alterada: " + request.id(),request);
-        return repository.save(consultaModel);
+        return response;
     }
 
     private void validarPermissaoAcesso(ConsultaModel consulta, String userRole, Long userId) {
