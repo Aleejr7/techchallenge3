@@ -1,7 +1,5 @@
 package com.notificacao.kafka;
 
-
-import com.notificacao.DTO.ConsultaDTO;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,8 +35,8 @@ public class KafkaConsumerConfig {
         props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
         //props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "com.notificacao.DTO.ConsultaDTO");
         props.put(JsonDeserializer.TYPE_MAPPINGS,
-                "com.appserviceagendamento.domain.dto.ConsultaDTO:com.notificacao.DTO.ConsultaDTO," +
-                "com.appserviceagendamento.domain.dto.ConsultaUpdateDTO:com.notificacao.DTO.ConsultaUpdateDTO"
+                "com.appserviceagendamento.domain.dto.ConsultaDTOKafka:com.notificacao.DTO.ConsultaDTOKafka," +
+                "com.appserviceagendamento.domain.dto.ConsultaUpdateDTOKafka:com.notificacao.DTO.ConsultaUpdateDTOKafka"
         );
         return new DefaultKafkaConsumerFactory<>(props);
     }

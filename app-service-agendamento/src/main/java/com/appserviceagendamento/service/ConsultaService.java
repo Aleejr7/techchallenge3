@@ -1,8 +1,6 @@
 package com.appserviceagendamento.service;
 
-import com.appserviceagendamento.domain.dto.ConsultaDTO;
-import com.appserviceagendamento.domain.dto.ConsultaResponse;
-import com.appserviceagendamento.domain.dto.ConsultaUpdateDTO;
+import com.appserviceagendamento.domain.dto.*;
 import com.appserviceagendamento.domain.entity.ConsultaModel;
 import com.appserviceagendamento.domain.entity.StatusConsulta;
 import com.appserviceagendamento.domain.repository.ConsultaRepository;
@@ -58,7 +56,16 @@ public class ConsultaService {
                 salvo.getStatus(),
                 salvo.getMotivoConsulta()
         );
-        kafkaTemplate.send("consulta-eventos","Consulta criada em: "+ LocalDateTime.now(),request);
+        ConsultaDTOKafka requestKafka = new ConsultaDTOKafka(
+                salvo.getIdMedico(),
+                salvo.getIdPaciente(),
+                salvo.getDescricao(),
+                salvo.getDiaHoraConsulta(),
+                salvo.getMotivoConsulta(),
+                "Viroe@gmail.com",
+                "Vitor paciente",
+                "Vitor Medico");
+        kafkaTemplate.send("consulta-eventos","Consulta criada: "+ String.valueOf(salvo.getIdPaciente()),requestKafka);
         return response;
     }
 
@@ -91,7 +98,18 @@ public class ConsultaService {
                 consultaModel.getMotivoConsulta()
         );
 
-        kafkaTemplate.send("consulta-eventos","Consulta alterada: " + request.id(),request);
+        ConsultaUpdateDTOKafka requestKafka = new ConsultaUpdateDTOKafka(
+                request.id(),
+                salvo.getIdMedico(),
+                salvo.getIdPaciente(),
+                salvo.getDescricao(),
+                salvo.getDiaHoraConsulta(),
+                salvo.getStatus(),
+                salvo.getMotivoConsulta(),
+                "Viroe@gmail.com",
+                "Vitor paciente",
+                "Vitor Medico");
+        kafkaTemplate.send("consulta-eventos","Consulta alterada: " + request.id(),requestKafka);
         return response;
     }
 
