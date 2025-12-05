@@ -2,10 +2,10 @@ package com.appserviceagendamento.service;
 
 import com.appserviceagendamento.domain.dto.*;
 import com.appserviceagendamento.domain.entity.ConsultaModel;
-import com.appserviceagendamento.domain.entity.StatusConsulta;
 import com.appserviceagendamento.domain.repository.ConsultaRepository;
 import com.appserviceagendamento.service.Exceptions.BadRequest;
 import com.appserviceagendamento.service.Exceptions.NotFound;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +15,12 @@ import java.time.LocalDateTime;
 public class ConsultaService {
     private final ConsultaRepository repository;
     private final KafkaTemplate<String,Object> kafkaTemplate;
+    private final JdbcTemplate jdbc;
 
-    public ConsultaService(ConsultaRepository repository, KafkaTemplate<String, Object> kafkaTemplate) {
+    public ConsultaService(ConsultaRepository repository, KafkaTemplate<String, Object> kafkaTemplate, JdbcTemplate jdbc) {
         this.repository = repository;
         this.kafkaTemplate = kafkaTemplate;
+        this.jdbc = jdbc;
     }
     public ConsultaResponse buscarAgendamento(Long id, String userRole, Long userId){
         ConsultaModel agendamento = repository.findById(id).orElseThrow(() -> new NotFound("Consulta não encontrada"));
@@ -42,6 +44,9 @@ public class ConsultaService {
             throw new BadRequest("Apenas médicos e enfermeiros podem criar consultas");
         }
 
+        var nomeMedico = buscarMedicoId(request.idMedico());
+        DadosPaciente paciente = buscarDadosPaciente(request.idPaciente());
+
         if (!request.diaHoraConsulta().isAfter(LocalDateTime.now())){
             throw new BadRequest("A data da consulta deve ser no futuro.");
         }
@@ -62,9 +67,9 @@ public class ConsultaService {
                 salvo.getDescricao(),
                 salvo.getDiaHoraConsulta(),
                 salvo.getMotivoConsulta(),
-                "Viroe@gmail.com",
-                "Vitor paciente",
-                "Vitor Medico");
+                paciente.email(),
+                paciente.nome(),
+                nomeMedico);
         kafkaTemplate.send("consulta-eventos","Consulta criada: "+ String.valueOf(salvo.getIdPaciente()),requestKafka);
         return response;
     }
@@ -75,6 +80,9 @@ public class ConsultaService {
 
         // Validar permissões baseado na role
         validarPermissaoEdicao(consultaModel, userRole, userId);
+
+        var nomeMedico = buscarMedicoId(request.idMedico());
+        DadosPaciente paciente = buscarDadosPaciente(request.idPaciente());
 
         if (!request.diaHoraConsulta().isAfter(LocalDateTime.now())){
             throw new BadRequest("A data da consulta deve ser no futuro.");
@@ -106,9 +114,9 @@ public class ConsultaService {
                 salvo.getDiaHoraConsulta(),
                 salvo.getStatus(),
                 salvo.getMotivoConsulta(),
-                "Viroe@gmail.com",
-                "Vitor paciente",
-                "Vitor Medico");
+                paciente.email(),
+                paciente.nome,
+                nomeMedico);
         kafkaTemplate.send("consulta-eventos","Consulta alterada: " + request.id(),requestKafka);
         return response;
     }
@@ -144,4 +152,27 @@ public class ConsultaService {
             throw new BadRequest("Médico só pode editar suas próprias consultas");
         }
     }
+
+    private String buscarMedicoId(Long idUsuario){
+        String sql = "SELECT nome FROM usuarios WHERE id = ? AND tipo_usuario = ?";
+        try {
+            return jdbc.queryForObject(sql, String.class,idUsuario,"MEDICO");
+        }catch (Exception e){
+            throw new NotFound("Medico não encontrado");
+        }
+    }
+
+    private DadosPaciente buscarDadosPaciente(Long idUsuario){
+        String sql = "SELECT nome,email FROM usuarios WHERE id = ? AND tipo_usuario = ?";
+        try {
+            return jdbc.queryForObject(sql, (rs, rowNum) -> new DadosPaciente(
+                    rs.getString("nome"),
+                    rs.getString("email")
+            ),idUsuario,"PACIENTE");
+        }catch (Exception e){
+            throw new NotFound("Paciente não encontrado");
+        }
+    }
+
+    record DadosPaciente(String nome, String email) {}
 }
