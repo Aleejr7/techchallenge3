@@ -1,4 +1,4 @@
-package com.appserviceagendamento.controller.Handlers;
+package com.appserviceagendamento.controller.handler;
 
 import com.appserviceagendamento.domain.dto.ExceptionDTO;
 import com.appserviceagendamento.service.Exceptions.BadRequest;

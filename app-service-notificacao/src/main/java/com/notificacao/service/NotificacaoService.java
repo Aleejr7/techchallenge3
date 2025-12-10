@@ -10,28 +10,31 @@ import org.springframework.stereotype.Service;
 @KafkaListener(topics = "consulta-eventos", containerFactory = "consultaDTOConcurrentKafkaListenerContainerFactory")
 public class NotificacaoService {
 
+    private final EmailService emailService;
+
+    public NotificacaoService(EmailService emailService) {
+        this.emailService = emailService;
+    }
+
     @KafkaHandler
     public void notificacaoCriadaListener(ConsultaDTOKafka consulta) {
-        System.out.println("Mensagem recebida criação 01: " + consulta.idMedico() +
-                " "+ consulta.motivoConsulta()+
-                " "+ consulta.diaHoraConsulta()+
-                " "+ consulta.idPaciente()+
-                " "+ consulta.descricao()+
-                " "+ consulta.status()+
-                " "+consulta.emailPaciente()+
-                " "+consulta.nomeMedico()+
-                " "+consulta.nomePaciente());
+        emailService.enviarEmailConsultaCriada(
+                consulta.emailPaciente(),
+                consulta.nomePaciente(),
+                consulta.nomeMedico(),
+                consulta.motivoConsulta(),
+                consulta.diaHoraConsulta()
+        );
     }
     @KafkaHandler
     public void notificacaoEditadaListener(ConsultaUpdateDTOKafka consulta) {
-        System.out.println("Mensagem recebida edição 02: " + consulta.idMedico() +
-                " "+ consulta.motivoConsulta()+
-                " "+ consulta.diaHoraConsulta()+
-                " "+ consulta.idPaciente()+
-                " "+ consulta.descricao()+
-                " "+ consulta.status()+
-                " "+consulta.emailPaciente()+
-                " "+consulta.nomeMedico()+
-                " "+consulta.nomePaciente());
+        emailService.enviarEmailConsultaAtualizada(
+                consulta.emailPaciente(),
+                consulta.nomePaciente(),
+                consulta.nomeMedico(),
+                consulta.motivoConsulta(),
+                consulta.diaHoraConsulta(),
+                consulta.status()
+        );
     }
 }
