@@ -1,6 +1,7 @@
 package br.com.fiap.techchallenge_gateway.infra.security;
 
 import br.com.fiap.techchallenge_gateway.domain.entity.Usuario;
+import br.com.fiap.techchallenge_gateway.service.exceptions.TokenInvalidoException;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
@@ -44,7 +45,7 @@ public class TokenService
                     .verify( token )
                     .getSubject( );
         }catch( Exception exception ){
-            throw new RuntimeException( "Token inválido ou expirado", exception );
+            throw new TokenInvalidoException("Token inválido ou expirado");
         }
     }
 

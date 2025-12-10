@@ -4,6 +4,8 @@ import br.com.fiap.techchallenge_gateway.domain.dtos.CriarUsuarioDTO;
 import br.com.fiap.techchallenge_gateway.domain.entity.Usuario;
 import br.com.fiap.techchallenge_gateway.domain.entity.utils.TipoUsuarioRole;
 import br.com.fiap.techchallenge_gateway.repository.UsuarioRepository;
+import br.com.fiap.techchallenge_gateway.service.exceptions.EmailJaExisteException;
+import br.com.fiap.techchallenge_gateway.service.exceptions.TipoUsuarioInvalidoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -22,7 +24,7 @@ public class UsuarioService
 
         boolean usuarioExistente = existsByEmail( criarUsuarioDTO.email() );
         if( usuarioExistente ){
-            throw new IllegalArgumentException("Já existe um usuário com esse email.");
+            throw new EmailJaExisteException("Email já cadastrado no sistema");
         }
 
         String senhaEncriptada = authService.encriptarSenha( criarUsuarioDTO.senha() );
@@ -52,7 +54,7 @@ public class UsuarioService
             case "PACIENTE":
                 return TipoUsuarioRole.PACIENTE;
             default:
-                throw new IllegalArgumentException("Tipo de usuário inválido: " + tipoUsuarioStr);
+                throw new TipoUsuarioInvalidoException("Tipo de usuário inválido: " + tipoUsuarioStr + ". Valores aceitos: MEDICO, ENFERMEIRO, PACIENTE");
         }
     }
 }

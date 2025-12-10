@@ -52,7 +52,6 @@ services:
     build:
       context: ..
       dockerfile: docker/Dockerfile-service-auth
-    image: docker-app-auth
     container_name: app-service-auth
     restart: on-failure
     depends_on:
