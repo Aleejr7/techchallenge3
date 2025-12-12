@@ -1,14 +1,18 @@
+scalar DateTime
+
 type Consulta {
     id: ID!
-    idMedico: Int!
-    idPaciente: Int!
+    idMedico: Int
+    idPaciente: Int
+    idEnfermeiro: Int
+    diaHoraConsulta: DateTime
+    status: String
     descricao: String
-    diaHoraConsulta: String!
-    status: String!
     motivoConsulta: String
 }
 
 type Query {
-    # Permite filtrar histórico do paciente, opcionalmente apenas futuras
     historicoPaciente(idPaciente: Int!, apenasFuturas: Boolean): [Consulta]
+    historicoMedico(idMedico: Int!, apenasFuturas: Boolean): [Consulta]
+    historicoEnfermeiro(idEnfermeiro: Int!, apenasFuturas: Boolean): [Consulta]
 }

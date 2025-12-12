@@ -29,6 +29,7 @@ public class KafkaConsumerService {
             HistConsultaDTO dto = new HistConsultaDTO(
                     mensagem.idMedico(),
                     mensagem.idPaciente(),
+                    mensagem.idEnfermeiro(),
                     mensagem.descricao(),
                     dataConvertida,
                     HistStatusConsulta.valueOf(mensagem.status()),

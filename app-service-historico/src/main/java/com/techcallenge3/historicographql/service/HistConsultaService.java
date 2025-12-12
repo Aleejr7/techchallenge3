@@ -25,6 +25,20 @@ public class HistConsultaService {
         return repository.findByIdPaciente(idPaciente);
     }
 
+    public List<HistConsulta> buscarHistoricoMedico(Long idMedico, Boolean apenasFuturas) {
+        if (Boolean.TRUE.equals(apenasFuturas)) {
+            return repository.findByIdMedicoAndDiaHoraConsultaAfter(idMedico, LocalDateTime.now());
+        }
+        return repository.findByIdMedico(idMedico);
+    }
+
+    public List<HistConsulta> buscarHistoricoEnfermeiro(Long idEnfermeiro, Boolean apenasFuturas) {
+        if (Boolean.TRUE.equals(apenasFuturas)) {
+            return repository.findByIdEnfermeiroAndDiaHoraConsultaAfter(idEnfermeiro, LocalDateTime.now());
+        }
+        return repository.findByIdEnfermeiro(idEnfermeiro);
+    }
+
     @Transactional
     public HistConsulta salvarConsulta(HistConsultaDTO dados) {
         HistConsulta novaConsulta = new HistConsulta(dados);

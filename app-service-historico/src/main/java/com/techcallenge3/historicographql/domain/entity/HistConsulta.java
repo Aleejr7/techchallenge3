@@ -19,6 +19,9 @@ public class HistConsulta {
     @Column(name = "id_paciente")
     private Long idPaciente;
 
+    @Column(name = "id_enfermeiro")
+    private Long idEnfermeiro;
+
     @Column(name = "descricao")
     private String descricao;
 
@@ -31,15 +34,15 @@ public class HistConsulta {
     @Column(name = "motivo_consulta")
     private String motivoConsulta;
 
-    public HistConsulta() {
-    }
+    public HistConsulta() {}
 
     public HistConsulta(HistConsultaDTO histConsultaDTO) {
         this.idMedico = histConsultaDTO.idMedico();
         this.idPaciente = histConsultaDTO.idPaciente();
+        this.idEnfermeiro = histConsultaDTO.idEnfermeiro();
         this.descricao = histConsultaDTO.descricao();
-        this.diaHoraConsulta = histConsultaDTO.diaHoraConsulta();
         this.motivoConsulta = histConsultaDTO.motivoConsulta();
+        this.diaHoraConsulta = histConsultaDTO.diaHoraConsulta();
         this.status = histConsultaDTO.status();
     }
 
@@ -50,6 +53,8 @@ public class HistConsulta {
     public Long getIdPaciente() {
         return idPaciente;
     }
+
+    public Long getIdEnfermeiro() { return  idEnfermeiro;}
 
     public String getDescricao() {
         return descricao;
@@ -74,6 +79,8 @@ public class HistConsulta {
     public void setIdPaciente(Long idPaciente) {
         this.idPaciente = idPaciente;
     }
+
+    public void setIdEnfermeiro(Long idEnfermeiro) { this.idEnfermeiro = idEnfermeiro; }
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;

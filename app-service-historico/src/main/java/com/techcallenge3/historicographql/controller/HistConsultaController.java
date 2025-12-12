@@ -21,4 +21,14 @@ public class HistConsultaController {
     public List<HistConsulta> historicoPaciente(@Argument Long idPaciente, @Argument Boolean apenasFuturas) {
         return service.buscarHistorico(idPaciente, apenasFuturas);
     }
+
+    @QueryMapping
+    public List<HistConsulta> historicoMedico(@Argument Long idMedico, @Argument Boolean apenasFuturas) {
+        return service.buscarHistoricoMedico(idMedico, apenasFuturas);
+    }
+
+    @QueryMapping
+    public List<HistConsulta> historicoEnfermeiro(@Argument Long idEnfermeiro, @Argument Boolean apenasFuturas) {
+        return service.buscarHistoricoEnfermeiro(idEnfermeiro, apenasFuturas);
+    }
 }

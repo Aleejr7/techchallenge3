@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 public record HistConsultaDTO(
         Long idMedico,
         Long idPaciente,
+        Long idEnfermeiro,
         String descricao,
         @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
         LocalDateTime diaHoraConsulta,
