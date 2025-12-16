@@ -1,6 +1,6 @@
 package com.appserviceagendamento.domain.entity;
 
-import com.appserviceagendamento.domain.dto.ConsultaDTO;
+import com.appserviceagendamento.domain.dto.ConsultaCreateDTO;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -34,12 +34,12 @@ public class ConsultaModel {
     public ConsultaModel() {
     }
 
-    public ConsultaModel(ConsultaDTO consultaDTO) {
-        this.idMedico = consultaDTO.idMedico();
-        this.idPaciente = consultaDTO.idPaciente();
-        this.descricao = consultaDTO.descricao();
-        this.diaHoraConsulta = consultaDTO.diaHoraConsulta();
-        this.motivoConsulta = consultaDTO.motivoConsulta();
+    public ConsultaModel(ConsultaCreateDTO consultaCreateDTO) {
+        this.idMedico = consultaCreateDTO.idMedico();
+        this.idPaciente = consultaCreateDTO.idPaciente();
+        this.descricao = consultaCreateDTO.descricao();
+        this.diaHoraConsulta = consultaCreateDTO.diaHoraConsulta();
+        this.motivoConsulta = consultaCreateDTO.motivoConsulta();
         this.status = StatusConsulta.ABERTO;
     }
 

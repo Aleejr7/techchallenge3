@@ -39,7 +39,7 @@ public class ConsultaService {
         return consulta;
     }
 
-    public ConsultaResponse criarAgendamento(ConsultaDTO request, String userRole, Long userId){
+    public ConsultaResponse criarAgendamento(ConsultaCreateDTO request, String userRole, Long userId){
         if (!"MEDICO".equals(userRole) && !"ENFERMEIRO".equals(userRole)) {
             throw new BadRequest("Apenas médicos e enfermeiros podem criar consultas");
         }
@@ -52,25 +52,25 @@ public class ConsultaService {
         }
 
         ConsultaModel consultaModel = new ConsultaModel(request);
-        ConsultaModel salvo = repository.save(consultaModel);
+        ConsultaModel consultaSalva = repository.save(consultaModel);
         ConsultaResponse response = new ConsultaResponse(
-                salvo.getIdMedico(),
-                salvo.getIdPaciente(),
-                salvo.getDescricao(),
-                salvo.getDiaHoraConsulta(),
-                salvo.getStatus(),
-                salvo.getMotivoConsulta()
+                consultaSalva.getIdMedico(),
+                consultaSalva.getIdPaciente(),
+                consultaSalva.getDescricao(),
+                consultaSalva.getDiaHoraConsulta(),
+                consultaSalva.getStatus(),
+                consultaSalva.getMotivoConsulta()
         );
         ConsultaDTOKafka requestKafka = new ConsultaDTOKafka(
-                salvo.getIdMedico(),
-                salvo.getIdPaciente(),
-                salvo.getDescricao(),
-                salvo.getDiaHoraConsulta(),
-                salvo.getMotivoConsulta(),
+                consultaSalva.getIdMedico(),
+                consultaSalva.getIdPaciente(),
+                consultaSalva.getDescricao(),
+                consultaSalva.getDiaHoraConsulta(),
+                consultaSalva.getMotivoConsulta(),
                 paciente.email(),
                 paciente.nome(),
                 nomeMedico);
-        kafkaTemplate.send("consulta-eventos","Consulta criada: "+ String.valueOf(salvo.getIdPaciente()),requestKafka);
+        kafkaTemplate.send("consulta-eventos","Consulta criada: "+ String.valueOf(consultaSalva.getIdPaciente()),requestKafka);
         return response;
     }
 
@@ -95,7 +95,7 @@ public class ConsultaService {
         consultaModel.setStatus(request.status());
         consultaModel.setMotivoConsulta(request.motivoConsulta());
 
-        ConsultaModel salvo = repository.save(consultaModel);
+        ConsultaModel consultaSalva = repository.save(consultaModel);
 
         ConsultaResponse response = new ConsultaResponse(
                 consultaModel.getIdMedico(),
@@ -108,12 +108,12 @@ public class ConsultaService {
 
         ConsultaUpdateDTOKafka requestKafka = new ConsultaUpdateDTOKafka(
                 request.id(),
-                salvo.getIdMedico(),
-                salvo.getIdPaciente(),
-                salvo.getDescricao(),
-                salvo.getDiaHoraConsulta(),
-                salvo.getStatus(),
-                salvo.getMotivoConsulta(),
+                consultaSalva.getIdMedico(),
+                consultaSalva.getIdPaciente(),
+                consultaSalva.getDescricao(),
+                consultaSalva.getDiaHoraConsulta(),
+                consultaSalva.getStatus(),
+                consultaSalva.getMotivoConsulta(),
                 paciente.email(),
                 paciente.nome,
                 nomeMedico);

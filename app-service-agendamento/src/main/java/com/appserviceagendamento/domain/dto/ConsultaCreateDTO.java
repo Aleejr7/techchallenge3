@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Positive;
 
 import java.time.LocalDateTime;
 
-public record ConsultaDTO(
+public record ConsultaCreateDTO(
          @NotNull(message = "O ID do médico é obrigatório")
          @Positive(message = "Insira um valor válido")
          Long idMedico,

@@ -1,6 +1,6 @@
 package com.appserviceagendamento.controller;
 
-import com.appserviceagendamento.domain.dto.ConsultaDTO;
+import com.appserviceagendamento.domain.dto.ConsultaCreateDTO;
 import com.appserviceagendamento.domain.dto.ConsultaUpdateDTO;
 import com.appserviceagendamento.service.ConsultaService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,13 +31,13 @@ public class ConsultaController {
 
     @PostMapping("consulta")
     public ResponseEntity agendarConsulta(
-            @RequestBody @Valid ConsultaDTO consultaDTO,
+            @RequestBody @Valid ConsultaCreateDTO consultaCreateDTO,
             HttpServletRequest request) {
 
         String userRole = (String) request.getAttribute("userRole");
         Long userId = (Long) request.getAttribute("userId");
 
-        return ResponseEntity.ok(service.criarAgendamento(consultaDTO, userRole, userId));
+        return ResponseEntity.ok(service.criarAgendamento(consultaCreateDTO, userRole, userId));
     }
 
     @PutMapping("consulta")
