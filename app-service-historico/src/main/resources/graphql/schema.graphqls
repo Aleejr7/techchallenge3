@@ -1,0 +1,18 @@
+scalar DateTime
+scalar Long
+
+type Consulta {
+    id: ID!
+    idMedico: Long
+    idPaciente: Long
+    diaHoraConsulta: DateTime
+    status: String
+    descricao: String
+    motivoConsulta: String
+}
+
+type Query {
+    historicoPaciente(idPaciente: Long!, apenasFuturas: Boolean): [Consulta]
+    historicoMedicoOuEnfermeiro(idMedicoOuEnfermeiro: Long!, apenasFuturas: Boolean): [Consulta]
+}
+

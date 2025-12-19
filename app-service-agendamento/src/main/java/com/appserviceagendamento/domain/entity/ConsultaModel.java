@@ -25,6 +25,7 @@ public class ConsultaModel {
     @Column(name = "dia_hora_consulta")
     private LocalDateTime diaHoraConsulta;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private StatusConsulta status;
 

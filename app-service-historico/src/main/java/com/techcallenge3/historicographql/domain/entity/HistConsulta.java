@@ -19,15 +19,13 @@ public class HistConsulta {
     @Column(name = "id_paciente")
     private Long idPaciente;
 
-    @Column(name = "id_enfermeiro")
-    private Long idEnfermeiro;
-
     @Column(name = "descricao")
     private String descricao;
 
     @Column(name = "dia_hora_consulta")
     private LocalDateTime diaHoraConsulta;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private HistStatusConsulta status;
 
@@ -39,11 +37,14 @@ public class HistConsulta {
     public HistConsulta(HistConsultaDTO histConsultaDTO) {
         this.idMedico = histConsultaDTO.idMedico();
         this.idPaciente = histConsultaDTO.idPaciente();
-        this.idEnfermeiro = histConsultaDTO.idEnfermeiro();
         this.descricao = histConsultaDTO.descricao();
         this.motivoConsulta = histConsultaDTO.motivoConsulta();
         this.diaHoraConsulta = histConsultaDTO.diaHoraConsulta();
         this.status = histConsultaDTO.status();
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Long getIdMedico() {
@@ -53,8 +54,6 @@ public class HistConsulta {
     public Long getIdPaciente() {
         return idPaciente;
     }
-
-    public Long getIdEnfermeiro() { return  idEnfermeiro;}
 
     public String getDescricao() {
         return descricao;
@@ -80,8 +79,6 @@ public class HistConsulta {
         this.idPaciente = idPaciente;
     }
 
-    public void setIdEnfermeiro(Long idEnfermeiro) { this.idEnfermeiro = idEnfermeiro; }
-
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
@@ -98,3 +95,4 @@ public class HistConsulta {
         this.motivoConsulta = motivoConsulta;
     }
 }
+

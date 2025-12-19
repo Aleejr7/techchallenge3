@@ -4,9 +4,9 @@ public record MensagemConsulta(
         Long id,
         Long idMedico,
         Long idPaciente,
-        Long idEnfermeiro,
         String descricao,
         String diaHoraConsulta,
         String status,
         String motivoConsulta
 ) {}
+

@@ -18,25 +18,28 @@ public class HistConsultaService {
         this.repository = repository;
     }
 
-    public List<HistConsulta> buscarHistorico(Long idPaciente, Boolean apenasFuturas) {
+    public List<HistConsulta> buscarHistoricoPaciente(Long idPaciente, Boolean apenasFuturas, String userRole, Long userId) {
+        // PACIENTE só pode ver suas próprias consultas
+        if ("PACIENTE".equals(userRole) && !idPaciente.equals(userId)) {
+            throw new SecurityException("Paciente só pode visualizar suas próprias consultas");
+        }
+
         if (Boolean.TRUE.equals(apenasFuturas)) {
             return repository.findByIdPacienteAndDiaHoraConsultaAfter(idPaciente, LocalDateTime.now());
         }
         return repository.findByIdPaciente(idPaciente);
     }
 
-    public List<HistConsulta> buscarHistoricoMedico(Long idMedico, Boolean apenasFuturas) {
-        if (Boolean.TRUE.equals(apenasFuturas)) {
-            return repository.findByIdMedicoAndDiaHoraConsultaAfter(idMedico, LocalDateTime.now());
+    public List<HistConsulta> buscarHistoricoMedicoOuEnfermeiro(Long idMedicoOuEnfermeiro, Boolean apenasFuturas, String userRole) {
+        // Apenas MEDICO e ENFERMEIRO podem visualizar
+        if (!"MEDICO".equals(userRole) && !"ENFERMEIRO".equals(userRole)) {
+            throw new SecurityException("Apenas médicos e enfermeiros podem visualizar este histórico");
         }
-        return repository.findByIdMedico(idMedico);
-    }
 
-    public List<HistConsulta> buscarHistoricoEnfermeiro(Long idEnfermeiro, Boolean apenasFuturas) {
         if (Boolean.TRUE.equals(apenasFuturas)) {
-            return repository.findByIdEnfermeiroAndDiaHoraConsultaAfter(idEnfermeiro, LocalDateTime.now());
+            return repository.findByIdMedicoAndDiaHoraConsultaAfter(idMedicoOuEnfermeiro, LocalDateTime.now());
         }
-        return repository.findByIdEnfermeiro(idEnfermeiro);
+        return repository.findByIdMedico(idMedicoOuEnfermeiro);
     }
 
     @Transactional
@@ -45,3 +48,4 @@ public class HistConsultaService {
         return repository.save(novaConsulta);
     }
 }
+

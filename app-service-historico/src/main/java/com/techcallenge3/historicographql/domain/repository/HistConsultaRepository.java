@@ -15,7 +15,4 @@ public interface HistConsultaRepository extends JpaRepository<HistConsulta, Long
 
     List<HistConsulta> findByIdMedico(Long idMedico);
     List<HistConsulta> findByIdMedicoAndDiaHoraConsultaAfter(Long idMedico, LocalDateTime data);
-
-    List<HistConsulta> findByIdEnfermeiro(Long idEnfermeiro);
-    List<HistConsulta> findByIdEnfermeiroAndDiaHoraConsultaAfter(Long idEnfermeiro, LocalDateTime data);
 }

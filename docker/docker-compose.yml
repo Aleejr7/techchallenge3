@@ -120,6 +120,31 @@ services:
     networks:
       - techchallenge-network
 
+  app-historico:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile-service-historico
+    container_name: app-service-historico
+    restart: on-failure
+    depends_on:
+      db:
+        condition: service_healthy
+      kafka: # Adicionado para garantir ordem de subida
+        condition: service_started
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://db:3306/${MARIADB_DATABASE}?useSSL=false
+      SPRING_DATASOURCE_USERNAME: ${MARIADB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${MARIADB_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MariaDBDialect
+      SERVER_PORT: 8083
+      # ADICIONADO: Aponta para o endereço interno do Kafka
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    networks:
+      - techchallenge-network
+
   kong:
     image: kong:3.4
     container_name: kong
