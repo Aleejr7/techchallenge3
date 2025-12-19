@@ -127,7 +127,7 @@
               "mode": "graphql",
               "graphql": {
                 "query": "query HistoricoPaciente($idPaciente: Long!, $apenasFuturas: Boolean) {\n  historicoPaciente(idPaciente: $idPaciente, apenasFuturas: $apenasFuturas) {\n    id\n    idPaciente\n    idMedico\n    status\n    diaHoraConsulta\n    descricao\n    motivoConsulta\n  }\n}",
-                "variables": "{\n  \"idPaciente\": 1,\n  \"apenasFuturas\": false\n}"
+                "variables": "{\n  \"idPaciente\": 4,\n  \"apenasFuturas\": false\n}"
               }
             }
           }
@@ -164,7 +164,7 @@
               "mode": "graphql",
               "graphql": {
                 "query": "query HistoricoPaciente($idPaciente: Long!, $apenasFuturas: Boolean) {\n  historicoPaciente(idPaciente: $idPaciente, apenasFuturas: $apenasFuturas) {\n    id\n    idPaciente\n    idMedico\n    status\n    diaHoraConsulta\n    descricao\n    motivoConsulta\n  }\n}",
-                "variables": "{\n  \"idPaciente\": 1,\n  \"apenasFuturas\": true\n}"
+                "variables": "{\n  \"idPaciente\": 4,\n  \"apenasFuturas\": true\n}"
               }
             }
           }
