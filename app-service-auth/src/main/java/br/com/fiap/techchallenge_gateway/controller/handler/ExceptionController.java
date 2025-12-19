@@ -2,6 +2,7 @@ package br.com.fiap.techchallenge_gateway.controller.handler;
 
 import br.com.fiap.techchallenge_gateway.domain.dtos.ExceptionDTO;
 import br.com.fiap.techchallenge_gateway.service.exceptions.CredenciaisInvalidasException;
+import br.com.fiap.techchallenge_gateway.service.exceptions.DocumentoJaExisteException;
 import br.com.fiap.techchallenge_gateway.service.exceptions.EmailJaExisteException;
 import br.com.fiap.techchallenge_gateway.service.exceptions.TipoUsuarioInvalidoException;
 import br.com.fiap.techchallenge_gateway.service.exceptions.TokenInvalidoException;
@@ -17,6 +18,12 @@ public class ExceptionController {
 
     @ExceptionHandler(EmailJaExisteException.class)
     public ResponseEntity<ExceptionDTO> handleEmailJaExiste(EmailJaExisteException ex) {
+        ExceptionDTO erro = new ExceptionDTO(ex.getMessage(), HttpStatus.CONFLICT.value());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(erro);
+    }
+
+    @ExceptionHandler(DocumentoJaExisteException.class)
+    public ResponseEntity<ExceptionDTO> handleDocumentoJaExiste(DocumentoJaExisteException ex) {
         ExceptionDTO erro = new ExceptionDTO(ex.getMessage(), HttpStatus.CONFLICT.value());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(erro);
     }

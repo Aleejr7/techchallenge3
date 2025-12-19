@@ -42,8 +42,26 @@ public class AuthController
     }
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody @Valid CriarUsuarioDTO criarUsuarioDTO ){
-        usuarioService.salvarUsuario( criarUsuarioDTO );
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> register(@RequestBody @Valid CriarUsuarioDTO criarUsuarioDTO ){
+        Usuario usuario = usuarioService.salvarUsuario( criarUsuarioDTO );
+
+        var response = new RegistroResponseDTO(
+            "Usuário cadastrado com sucesso",
+            usuario.getId(),
+            usuario.getNome(),
+            usuario.getEmail(),
+            usuario.getTipoUsuario().name()
+        );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    // DTO para resposta de registro
+    private record RegistroResponseDTO(
+        String message,
+        Long id,
+        String nome,
+        String email,
+        String tipoUsuario
+    ) {}
 }
