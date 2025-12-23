@@ -14,7 +14,7 @@ public class GraphQLExceptionHandler extends DataFetcherExceptionResolverAdapter
     protected GraphQLError resolveToSingleError(Throwable ex, DataFetchingEnvironment env) {
         return GraphqlErrorBuilder.newError()
                 .errorType(ErrorType.INTERNAL_ERROR)
-                .message("Ocorreu um erro inesperado ao buscar o histórico: " + ex.getMessage())
+                .message("Erro ao buscar o histórico: " + ex.getMessage())
                 .path(env.getExecutionStepInfo().getPath())
                 .location(env.getField().getSourceLocation())
                 .build();

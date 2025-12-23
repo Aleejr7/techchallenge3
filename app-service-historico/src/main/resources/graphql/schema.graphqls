@@ -13,6 +13,6 @@ type Consulta {
 
 type Query {
     historicoPaciente(idPaciente: Long!, apenasFuturas: Boolean): [Consulta]
-    historicoMedicoOuEnfermeiro(idMedicoOuEnfermeiro: Long!, apenasFuturas: Boolean): [Consulta]
+    historicoMedicoOuEnfermeiro(apenasFuturas: Boolean): [Consulta]
 }
 

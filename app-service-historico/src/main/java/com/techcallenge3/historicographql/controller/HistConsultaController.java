@@ -32,13 +32,12 @@ public class HistConsultaController {
 
     @QueryMapping
     public List<HistConsulta> historicoMedicoOuEnfermeiro(
-            @Argument Long idMedicoOuEnfermeiro,
             @Argument Boolean apenasFuturas,
             DataFetchingEnvironment env) {
 
         String userRole = env.getGraphQlContext().get("userRole");
 
-        return service.buscarHistoricoMedicoOuEnfermeiro(idMedicoOuEnfermeiro, apenasFuturas, userRole);
+        return service.buscarHistoricoMedicoOuEnfermeiro(apenasFuturas, userRole);
     }
 }
 

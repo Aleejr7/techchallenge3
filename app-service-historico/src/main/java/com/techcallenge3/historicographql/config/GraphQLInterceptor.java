@@ -1,6 +1,5 @@
 package com.techcallenge3.historicographql.config;
 
-import graphql.GraphQLContext;
 import org.springframework.graphql.server.WebGraphQlInterceptor;
 import org.springframework.graphql.server.WebGraphQlRequest;
 import org.springframework.graphql.server.WebGraphQlResponse;
@@ -25,16 +24,20 @@ public class GraphQLInterceptor implements WebGraphQlInterceptor {
                 String role = jwtUtil.getRole(token);
                 Long userId = jwtUtil.getUserId(token);
 
-                // Adiciona no contexto GraphQL
-                GraphQLContext graphQLContext = request.toExecutionInput().getGraphQLContext();
-                graphQLContext.put("userRole", role);
-                graphQLContext.put("userId", userId);
+                request.configureExecutionInput((executionInput, builder) -> {
+                    builder.graphQLContext(graphQLContextBuilder -> {
+                        graphQLContextBuilder.put("userRole", role);
+                        graphQLContextBuilder.put("userId", userId);
+                    });
+                    return builder.build();
+                });
             } catch (Exception e) {
-                // Token inválido ou expirado
             }
         }
 
         return chain.next(request);
     }
 }
+
+
 
