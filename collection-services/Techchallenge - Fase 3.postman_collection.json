@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "df78a562-46b2-43a6-8ec0-86a034ca4e63",
+		"_postman_id": "6e5b9810-18cf-48ae-a258-dc5edb905a9e",
 		"name": "Techchallenge - Fase 3",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "22234520"
+		"_exporter_id": "43217404",
+		"_collection_link": "https://orange-flare-239971.postman.co/workspace/Team-Workspace~bae0096a-7ce3-435d-80eb-2f32339e98fb/collection/43217404-6e5b9810-18cf-48ae-a258-dc5edb905a9e?action=share&source=collection_link&creator=43217404"
 	},
 	"item": [
 		{
@@ -16,18 +17,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
-									"});",
-									"",
-									"pm.test(\"Token exists and is a non-empty string\", function () {",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData).to.have.property(\"token\");",
-									"    pm.expect(jsonData.token).to.be.a(\"string\").and.not.empty;",
-									"    ",
-									"    // Save token to collection variable",
-									"    pm.collectionVariables.set(\"token\", jsonData.token);",
-									"});"
+									""
 								],
 								"type": "text/javascript",
 								"packages": {},
