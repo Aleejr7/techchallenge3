@@ -147,6 +147,10 @@ public class ConsultaService {
             throw new BadRequest("Paciente não pode editar consultas");
         }
 
+        if("ENFERMEIRO".equals(userRole)){
+            throw new BadRequest("Enfermeiro não pode editar consultas");
+        }
+
         // MEDICO só pode editar suas próprias consultas
         if ("MEDICO".equals(userRole) && !consulta.getIdMedico().equals(userId)) {
             throw new BadRequest("Médico só pode editar suas próprias consultas");
