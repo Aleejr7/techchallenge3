@@ -40,8 +40,8 @@ public class ConsultaService {
     }
 
     public ConsultaResponse criarAgendamento(ConsultaCreateDTO request, String userRole, Long userId){
-        if (!"MEDICO".equals(userRole) && !"ENFERMEIRO".equals(userRole)) {
-            throw new BadRequest("Apenas médicos e enfermeiros podem criar consultas");
+        if (!"ENFERMEIRO".equals(userRole)) {
+            throw new BadRequest("Apenas enfermeiros podem criar consultas");
         }
 
         var nomeMedico = buscarMedicoId(request.idMedico());

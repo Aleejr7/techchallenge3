@@ -1,0 +1,358 @@
+{
+	"info": {
+		"_postman_id": "df78a562-46b2-43a6-8ec0-86a034ca4e63",
+		"name": "Techchallenge - Fase 3",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22234520"
+	},
+	"item": [
+		{
+			"name": "app-service-auth",
+			"item": [
+				{
+					"name": "Logar",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Token exists and is a non-empty string\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"token\");",
+									"    pm.expect(jsonData.token).to.be.a(\"string\").and.not.empty;",
+									"    ",
+									"    // Save token to collection variable",
+									"    pm.collectionVariables.set(\"token\", jsonData.token);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"joao@gmail.com\",\n    \"senha\": \"usuario123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{gateway-techchallenge}}/auth/login",
+							"host": [
+								"{{gateway-techchallenge}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Registrar Usuario",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nome\": \"Joao\",\n    \"documento\": \"128.888.113-3\",\n    \"email\": \"carlos@gmail.com\",\n    \"senha\": \"usuario123\",\n    \"tipoUsuario\": \"PACIENTE\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{gateway-techchallenge}}/auth/register",
+							"host": [
+								"{{gateway-techchallenge}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "app-service-historico",
+			"item": [
+				{
+					"name": "Histórico Paciente",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query HistoricoPaciente($idPaciente: Long!, $apenasFuturas: Boolean) {\n  historicoPaciente(idPaciente: $idPaciente, apenasFuturas: $apenasFuturas) {\n    id\n    idPaciente\n    idMedico\n    status\n    diaHoraConsulta\n    descricao\n    motivoConsulta\n  }\n}",
+								"variables": "{\n  \"idPaciente\": 2,\n  \"apenasFuturas\": false\n}"
+							}
+						},
+						"url": {
+							"raw": "{{gateway-techchallenge}}/graphql",
+							"host": [
+								"{{gateway-techchallenge}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Busca histórico de consultas de um paciente. PACIENTE só pode ver suas próprias consultas. MÉDICO e ENFERMEIRO podem ver todas."
+					},
+					"response": []
+				},
+				{
+					"name": "Histórico Paciente - Apenas Futuras",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query HistoricoPaciente($idPaciente: Long!, $apenasFuturas: Boolean) {\n  historicoPaciente(idPaciente: $idPaciente, apenasFuturas: $apenasFuturas) {\n    id\n    idPaciente\n    idMedico\n    status\n    diaHoraConsulta\n    descricao\n    motivoConsulta\n  }\n}",
+								"variables": "{\n  \"idPaciente\": 2,\n  \"apenasFuturas\": true\n}"
+							}
+						},
+						"url": {
+							"raw": "{{gateway-techchallenge}}/graphql",
+							"host": [
+								"{{gateway-techchallenge}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Busca apenas consultas futuras de um paciente"
+					},
+					"response": []
+				},
+				{
+					"name": "Histórico Médico/Enfermeiro",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query HistoricoMedicoOuEnfermeiro($apenasFuturas: Boolean) {\n  historicoMedicoOuEnfermeiro(apenasFuturas: $apenasFuturas) {\n    id\n    idPaciente\n    idMedico\n    status\n    diaHoraConsulta\n    descricao\n    motivoConsulta\n  }\n}",
+								"variables": "{\n  \"apenasFuturas\": false\n}"
+							}
+						},
+						"url": {
+							"raw": "{{gateway-techchallenge}}/graphql",
+							"host": [
+								"{{gateway-techchallenge}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Busca histórico de consultas de um médico ou enfermeiro. Apenas MÉDICO e ENFERMEIRO podem acessar."
+					},
+					"response": []
+				},
+				{
+					"name": "Histórico Médico/Enfermeiro - Apenas Futuras",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query HistoricoMedicoOuEnfermeiro($apenasFuturas: Boolean) {\n  historicoMedicoOuEnfermeiro(apenasFuturas: $apenasFuturas) {\n    id\n    idPaciente\n    idMedico\n    status\n    diaHoraConsulta\n    descricao\n    motivoConsulta\n  }\n}",
+								"variables": "{\n  \"apenasFuturas\": true\n}"
+							}
+						},
+						"url": {
+							"raw": "{{gateway-techchallenge}}/graphql",
+							"host": [
+								"{{gateway-techchallenge}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Busca apenas consultas futuras de um médico ou enfermeiro"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "app-service-agendamento",
+			"item": [
+				{
+					"name": "Agendar Consulta",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"idMedico\": 3,\n    \"idPaciente\": 2,\n    \"descricao\": \"Consulta médica do paciente Alesandro, com o Dr. José\",\n    \"diaHoraConsulta\": \"30/12/2025 12:00\",\n    \"motivoConsulta\": \"Dor na coluna\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{gateway-techchallenge}}/consulta",
+							"host": [
+								"{{gateway-techchallenge}}"
+							],
+							"path": [
+								"consulta"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Consulta",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{gateway-techchallenge}}/consulta/1",
+							"host": [
+								"{{gateway-techchallenge}}"
+							],
+							"path": [
+								"consulta",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Editar Consulta",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 1, \n    \"idMedico\": 3,\n    \"idPaciente\": 2,\n    \"descricao\": \"Checkup\",\n    \"diaHoraConsulta\": \"24/12/2025 10:00\",\n    \"status\": \"ANDAMENTO\",\n    \"motivoConsulta\": \"Dores nas costas\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{gateway-techchallenge}}/consulta",
+							"host": [
+								"{{gateway-techchallenge}}"
+							],
+							"path": [
+								"consulta"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "gateway-techchallenge",
+			"value": ""
+		},
+		{
+			"key": "token",
+			"value": ""
+		}
+	]
+}
